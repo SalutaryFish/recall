@@ -1,0 +1,118 @@
+name: iOS
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "ios/**"
+      - ".github/workflows/ios.yml"
+  pull_request:
+    paths:
+      - "ios/**"
+      - ".github/workflows/ios.yml"
+  workflow_dispatch:
+    inputs:
+      runner:
+        description: "Runner image (xcode-27 = iOS 27 SDK; macos-26 = Xcode 26.6 fallback)"
+        type: choice
+        options: [xcode-27, macos-26]
+        default: xcode-27
+
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  XCODEGEN_VERSION: "2.46.0"
+
+defaults:
+  run:
+    working-directory: ios
+    shell: bash
+
+jobs:
+  build:
+    name: Build unsigned IPA
+    runs-on: ${{ inputs.runner || 'xcode-27' }}
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Toolchain
+        run: |
+          xcodebuild -version
+          swift --version
+
+      - name: Install XcodeGen
+        run: scripts/ci.sh install-xcodegen
+
+      - name: Test RecallCore
+        run: swift test --package-path RecallCore
+
+      - name: Generate project
+        run: xcodegen generate
+
+      - name: Build (device, unsigned)
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project Recall.xcodeproj -scheme Recall -configuration Release \
+            -destination 'generic/platform=iOS' -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
+            2>&1 | xcbeautify --renderer github-actions
+
+      - name: Package IPA
+        id: ipa
+        run: |
+          app=build/Build/Products/Release-iphoneos/Recall.app
+          test -d "$app"
+          name="Recall-${GITHUB_RUN_NUMBER}-${GITHUB_SHA::7}.ipa"
+          rm -rf dist && mkdir -p dist/Payload
+          cp -R "$app" dist/Payload/
+          (cd dist && zip -qry "$name" Payload)
+          echo "path=ios/dist/$name" >> "$GITHUB_OUTPUT"
+          ls -lh dist
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: Recall-ipa
+          path: ${{ steps.ipa.outputs.path }}
+          if-no-files-found: error
+          retention-days: 14
+
+  sim-tests:
+    name: Simulator tests
+    runs-on: ${{ inputs.runner || 'xcode-27' }}
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install XcodeGen
+        run: scripts/ci.sh install-xcodegen
+
+      - name: Generate project
+        run: xcodegen generate
+
+      - name: Pick a simulator
+        id: sim
+        run: echo "udid=$(scripts/ci.sh simulator)" >> "$GITHUB_OUTPUT"
+
+      - name: Unit + UI tests
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -project Recall.xcodeproj -scheme Recall \
+            -destination "id=${{ steps.sim.outputs.udid }}" -derivedDataPath build \
+            -resultBundlePath build/Results.xcresult \
+            2>&1 | xcbeautify --renderer github-actions
+
+      - name: Keep test results
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-results
+          path: ios/build/Results.xcresult
+          retention-days: 7

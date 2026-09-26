@@ -43,6 +43,13 @@ watch:
 logs:
     gh run view "$({{latest_run}})" --log-failed | tail -n 400
 
+# One-time: allow gh to push GitHub Actions workflows, push, and follow the build
+publish:
+    gh auth refresh -h github.com -s workflow
+    git push
+    sleep 8
+    just watch
+
 # Download the newest successfully built IPA into dist/
 ipa:
     rm -rf dist && mkdir -p dist
