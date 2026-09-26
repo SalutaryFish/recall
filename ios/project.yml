@@ -1,0 +1,114 @@
+# XcodeGen spec — the Xcode project is generated (on CI, or `xcodegen generate` on a Mac)
+# and never committed.
+name: Recall
+
+options:
+  bundleIdPrefix: dev.recall
+  deploymentTarget:
+    iOS: "26.0"
+  createIntermediateGroups: true
+  developmentLanguage: en
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    SWIFT_DEFAULT_ACTOR_ISOLATION: MainActor
+    SWIFT_APPROACHABLE_CONCURRENCY: YES
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    TARGETED_DEVICE_FAMILY: "1"
+    DEVELOPMENT_TEAM: ""
+    CODE_SIGN_STYLE: Automatic
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+    DEAD_CODE_STRIPPING: YES
+    SWIFT_EMIT_LOC_STRINGS: NO
+    LOCALIZATION_PREFERS_STRING_CATALOGS: NO
+  configs:
+    Release:
+      SWIFT_COMPILATION_MODE: wholemodule
+      SWIFT_OPTIMIZATION_LEVEL: "-O"
+
+packages:
+  RecallCore:
+    path: RecallCore
+
+targets:
+  Recall:
+    type: application
+    platform: iOS
+    sources:
+      - path: Recall
+    dependencies:
+      - package: RecallCore
+    info:
+      path: Recall/Info.plist
+      properties:
+        CFBundleDisplayName: Recall
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        LSRequiresIPhoneOS: true
+        ITSAppUsesNonExemptEncryption: false
+        CADisableMinimumFrameDurationOnPhone: true
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+        UILaunchScreen:
+          UIColorName: LaunchBackground
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        UIAppFonts:
+          - Newsreader-Variable.ttf
+          - Newsreader-Italic-Variable.ttf
+          - IBMPlexMono-Regular.ttf
+          - IBMPlexMono-Medium.ttf
+    settings:
+      base:
+        PRODUCT_NAME: Recall
+        PRODUCT_BUNDLE_IDENTIFIER: dev.recall.Recall
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        GENERATE_INFOPLIST_FILE: NO
+
+  RecallTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: RecallTests
+    dependencies:
+      - target: Recall
+      - package: RecallCore
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: dev.recall.RecallTests
+        SWIFT_DEFAULT_ACTOR_ISOLATION: nonisolated
+
+  RecallUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: RecallUITests
+    dependencies:
+      - target: Recall
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: dev.recall.RecallUITests
+        SWIFT_DEFAULT_ACTOR_ISOLATION: nonisolated
+
+schemes:
+  Recall:
+    build:
+      targets:
+        Recall: all
+        RecallTests: [test]
+        RecallUITests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      gatherCoverageData: false
+      targets:
+        - RecallTests
+        - RecallUITests
+    archive:
+      config: Release

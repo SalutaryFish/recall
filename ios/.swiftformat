@@ -1,0 +1,13 @@
+--swiftversion 6.0
+--indent 4
+--maxwidth 130
+--wraparguments preserve
+--wrapparameters preserve
+--stripunusedargs closure-only
+# Keep deliberate choices (explicit @State types for Xcode 27's @State macro,
+# aligned continuation lines, single-line guards) out of the formatter's hands.
+--disable wrapIfStatementBodies,wrapPropertyBodies,wrapFunctionBodies,wrapLoopBodies,wrapMultilineStatementBraces
+--disable hoistPatternLet,hoistTry,numberFormatting,blankLinesBetweenScopes,conditionalAssignment,andOperator
+--disable redundantType,redundantReturn,redundantSelf,redundantParens,redundantThrows,redundantOptionalBinding
+--disable noForceUnwrapInTests,preferKeyPath,opaqueGenericParameters,sortImports,wrap,indent,consecutiveSpaces
+--exclude build,Recall.xcodeproj,RecallCore/.build
