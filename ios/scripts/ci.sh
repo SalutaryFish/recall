@@ -24,9 +24,11 @@ case "${1:-}" in
         ;;
     simulator)
         # Newest available iOS runtime; prefer the iPhone the prototype was drawn for.
-        xcrun simctl list devices available -j | python3 -c '
+        list="$(mktemp)"
+        xcrun simctl list devices available -j > "$list"
+        python3 - "$list" <<'PY'
 import json, re, sys
-devices = json.load(sys.stdin)["devices"]
+devices = json.load(open(sys.argv[1]))["devices"]
 def version(runtime):
     m = re.search(r"iOS-(\d+)-(\d+)", runtime)
     return (int(m.group(1)), int(m.group(2))) if m else (0, 0)
@@ -35,8 +37,8 @@ phones = [d for d in devices[ios[-1]] if d["name"].startswith("iPhone")]
 preferred = [d for d in phones if d["name"] in ("iPhone 17 Pro", "iPhone 18 Pro", "iPhone 16 Pro")]
 pick = (preferred or phones)[0]
 print(pick["udid"])
-print(f"{pick[\"name\"]} ({ios[-1].split(\".\")[-1]})", file=sys.stderr)
-'
+print("simulator:", pick["name"], "on", ios[-1].split(".")[-1], file=sys.stderr)
+PY
         ;;
     *)
         echo "usage: ci.sh install-xcodegen|simulator" >&2

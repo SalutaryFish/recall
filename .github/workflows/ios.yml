@@ -98,7 +98,10 @@ jobs:
 
       - name: Pick a simulator
         id: sim
-        run: echo "udid=$(scripts/ci.sh simulator)" >> "$GITHUB_OUTPUT"
+        run: |
+          udid="$(scripts/ci.sh simulator)"
+          test -n "$udid"
+          echo "udid=$udid" >> "$GITHUB_OUTPUT"
 
       - name: Unit + UI tests
         run: |
