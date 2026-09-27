@@ -1,6 +1,7 @@
 # Recall for iPhone
 
-The native build of the prototype in `../Recall.proto.html`, specified by `../Recall-UX.md`.
+The native build of the web prototype in `../web/index.html`, specified by `../docs/spec/Recall-UX.md`.
+New features go into the web prototype first — see `../docs/foundation/WORKFLOW.md`.
 SwiftUI, iOS 26+ (built with the iOS 27 SDK), no dependencies.
 
 ## Getting the app onto your phone

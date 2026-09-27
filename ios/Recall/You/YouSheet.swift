@@ -80,9 +80,7 @@ struct YouSheet: View {
                 )
                     .lineSpacing(7)
                     .padding(.top, 16)
-                SheetSub(
-                    "RECALL \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "") (\(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""))"
-                )
+                SheetSub(versionLine)
                     .padding(.top, 12)
             }
         }
@@ -95,5 +93,15 @@ struct YouSheet: View {
         } message: {
             Text("Everything you logged yourself stays. Simulated auto-capture turns off.")
         }
+    }
+
+    /// "APP 0.1.0 (42) · IMPLEMENTS WEB 2.0.0" — which native build this is, and which
+    /// web prototype version it was ported from.
+    private var versionLine: String {
+        let info = Bundle.main.infoDictionary ?? [:]
+        let app = info["CFBundleShortVersionString"] as? String ?? "?"
+        let build = info["CFBundleVersion"] as? String ?? "?"
+        let web = info["RecallWebVersion"] as? String ?? "?"
+        return "APP \(app) (\(build)) · IMPLEMENTS WEB \(web)"
     }
 }

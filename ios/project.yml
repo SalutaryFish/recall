@@ -14,7 +14,7 @@ settings:
     SWIFT_VERSION: "6.0"
     SWIFT_DEFAULT_ACTOR_ISOLATION: MainActor
     SWIFT_APPROACHABLE_CONCURRENCY: YES
-    MARKETING_VERSION: "0.1.0"
+    MARKETING_VERSION: "0.1.1"
     CURRENT_PROJECT_VERSION: "1"
     TARGETED_DEVICE_FAMILY: "1"
     DEVELOPMENT_TEAM: ""
@@ -46,6 +46,8 @@ targets:
         CFBundleDisplayName: Recall
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        # The web prototype version this build implements (docs/foundation/VERSIONING.md).
+        RecallWebVersion: "2.0.0"
         LSRequiresIPhoneOS: true
         ITSAppUsesNonExemptEncryption: false
         CADisableMinimumFrameDurationOnPhone: true
