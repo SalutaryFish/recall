@@ -22,6 +22,13 @@ core-test:
         swift test --package-path ios/RecallCore
     fi
 
+# Serve web/ on this machine's network for testing unpushed prototype changes on the phone
+serve port="8000":
+    @echo "open on the phone (same Wi-Fi):"
+    @ip -4 -o addr show scope global | awk '{split($4,a,"/"); print "  http://" a[1] ":{{port}}/"}'
+    @echo "(NixOS firewall: sudo nft insert rule inet nixos-fw input-allow tcp dport {{port}} accept — or allow it in configuration.nix)"
+    python3 -m http.server {{port}} --bind 0.0.0.0 --directory web
+
 # Format the Swift sources
 fmt:
     swiftformat ios --config ios/.swiftformat

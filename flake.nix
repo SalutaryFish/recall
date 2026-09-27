@@ -27,6 +27,7 @@
             yq-go
             swiftformat # formatting for ios/
             imagemagick # renders the app icon from its SVG source
+            python3 # `just serve` for the web prototype
           ];
           # There is no Xcode on Linux: the app itself is compiled by GitHub Actions.
           # Locally we build and test RecallCore (pure Swift), edit with sourcekit-lsp,

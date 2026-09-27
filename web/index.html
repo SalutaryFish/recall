@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#FAFAF9">
-<title>Recall — prototype</title>
+<title>Recall — web v2.0.0</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet">
@@ -651,6 +651,9 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 
 <script>
 'use strict';
+/* Bump on EVERY change to this file — see docs/foundation/VERSIONING.md.
+   Frozen copies of released versions live in web/versions/v<X.Y.Z>/. */
+const WEB_VERSION = '2.0.0';
 /* ═══════════════════════════════════════════════════════════════════════
    RECALL — interactive prototype
    Vanilla, no build, no deps. Sections:
@@ -1766,7 +1769,7 @@ function openYou(){
   const total=S.entries.length;
   openSheet(`
     <div class="sh-title">You</div>
-    <div class="sh-sub">PROTOTYPE · DATA LIVES IN THIS BROWSER ONLY</div>
+    <div class="sh-sub">PROTOTYPE · WEB v${WEB_VERSION} · DATA LIVES IN THIS BROWSER ONLY</div>
     <div class="fields" style="margin-top:14px">
       <div class="field"><span class="k">ENTRIES</span><span class="v">${total}</span></div>
       <div class="field"><span class="k">DAYS</span><span class="v">${new Set(S.entries.map(e=>e.date)).size}</span></div>
