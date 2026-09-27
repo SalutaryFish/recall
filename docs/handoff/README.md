@@ -3,10 +3,11 @@
 Session-state snapshots for the next session (human or LLM). The project's enduring rules are in
 `../foundation/` — handoffs describe *where things stand*, not *how things must be done*.
 
-**Latest: [v1.1.0 — 2026-09-27](HANDOFF-v1.1.0-2026-09-27.md)** · web v2.0.0 · app v0.1.1
+**Latest: [v1.2.0 — 2026-09-27](HANDOFF-v1.2.0-2026-09-27.md)** · web v2.1.0 · app v0.1.1
 
 | Version | Date | Summary |
 |---|---|---|
+| [v1.2.0](HANDOFF-v1.2.0-2026-09-27.md) | 2026-09-27 | F-001 background tracks built as web v2.1.0 (published, in phone testing); 2 user decisions; 3 v2.0.0 bugs fixed; app v0.1.1 CI has a failing UI test |
 | [v1.1.0](HANDOFF-v1.1.0-2026-09-27.md) | 2026-09-27 | Web-first workflow, strict versioning, docs/ layout, web v2.0.0 on GitHub Pages, app v0.1.1; next: F-001 as web v2.1.0 |
 | [v1.0.0](HANDOFF-v1.0.0-2026-09-27.md) | 2026-09-27 | First native build: architecture, build pipeline, gotchas, tests (paths predate the docs/ move) |
 
