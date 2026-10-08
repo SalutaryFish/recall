@@ -14,11 +14,12 @@ Every released version, newest first. Web and app versions are independent numbe
 
 | Web version | Date | Tag | Notes |
 |---|---|---|---|
+| 2.2.0 | 2026-10-08 | `web-v2.2.0` | **F-002 automatic capture — first prototype.** Recall logs what you watch and listen to by itself: in the app a tweak inside LiveContainer appends JSON events, here that stream is **simulated** with the real contract's shape, and `capIngest` is the rule set that will port to RecallCore. Captured media opens and fills an F-001 track by itself (rail, chip, ribbon lane); nothing live → it becomes the main task. Pending captures are reviewed as **one capture card per stretch** (KEEP ALL / expand / drop one), so a burst of short video can't bury the day. A gap now offers what played through it. Layer-2 detail (a search) rides on the item. **Settings** (You): CAPTURE on/off, ENTRIES ENTER AS PENDING / STRAIGHT IN, SHORTEST SESSION, per-app toggles, and a simulator panel. **Fixes:** a capture card no longer truncates the span of the row above it (the live row lost its rail); capture settings were rebuilt on every read, losing writes; the ⏸/⏭ glyphs don't exist in these fonts (CSS-drawn now). |
 | 2.1.0 | 2026-09-27 | `web-v2.1.0` | **F-001 background tracks — first prototype.** ♫ tracks play alongside the main task: a quiet mini bar above the live bar; a rail, chip and ribbon lane on the day; a track sheet; stop → Stop everything / Keep (promotion); manual or auto "next" with typed lengths and a queue; sleep timer. YouTube titles come from oEmbed. Sources are a provider registry. **Data:** store `recall.v2` (today's v1 data is migrated, v1 untouched); data is kept across days (only a samples-only store is refreshed); timers are midnight-safe. **Fixes:** the ribbon's now-marker and scrub cursor were 20 px (~80 min) off; tapping the live bar now opens the live screen; a sheet opened just as another closed could come up empty. |
 | 2.0.0 | 2026-09-27 | `web-v2.0.0` | Baseline — the v2 interactive prototype (formerly `Recall.proto.html`), now version-stamped and frozen at `web/versions/v2.0.0/`. |
 
-**Next planned:** phone testing of web 2.1.0 → PATCH versions (2.1.1, …) until F-001 is approved →
-port to the app as app 0.2.0.
+**Next planned:** phone testing of web 2.2.0 (F-001 **and** F-002 together) → PATCH versions
+(2.2.1, …) until both are approved → port to the app as app 0.2.0, plus the `RecallTweak` dylib.
 
 ## Spec
 
