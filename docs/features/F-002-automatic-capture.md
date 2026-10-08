@@ -3,8 +3,8 @@
 | | |
 |---|---|
 | **Feature** | F-002 — Recall logs what you watch, listen to and read **by itself**, from inside the apps |
-| **Doc version** | v0.2 · 2026-10-08 (v0.1 = the design; v0.2 = built as web v2.2.0) |
-| **Status** | **Web (v2.2.0)** — first prototype, in phone testing |
+| **Doc version** | v0.3 · 2026-10-08 (v0.1 = the design; v0.2 = built as web v2.2.0; v0.3 = web v2.2.1 fixes + the gap decision) |
+| **Status** | **Web (v2.2.1)** — capture fixes on the first prototype, in phone testing |
 | **Approved in web** | — |
 | **Shipped in app** | — |
 | **Depends on** | F-001 background tracks (captured media fills tracks and items) |
@@ -136,6 +136,23 @@ Deterministic, and pure functions in RecallCore so they can be unit-tested on Li
 6. **Capture never moves or edits what the user logged by hand.** A conflict (a captured session
    overlapping a hand-made block) is shown as a suggestion, not applied.
 7. **Re-reading the same file changes nothing** (idempotent on `id`).
+8. **Events are placed by when they happened, not by what is live now** (web 2.2.1). The app reads
+   the file when it opens, so every event is in the past. Routing asks "which task was live at
+   this event's moment?" (`mainAt`), and between events the day is walked forward (`capSettle`):
+   a track whose task ended moves to the task that took over, or ends there — and music still
+   playing then owns the main lane (1c); captured media owning the main lane yields to a task you
+   logged later and keeps playing under it (1b). Events are processed in time order; the native
+   decoder must do the same, and track progress by file offset rather than a capped list of ids.
+9. **A pending capture is not tracked time** (principle 5). It is left out of the day's totals,
+   the ribbon, the archive and Insights until kept. A pending capture in the main lane sits inside
+   the gap it explains, which offers **KEEP / DISCARD / + FILL** (user decision, 2026-10-08);
+   choose `STRAIGHT IN` to have such captures fill the gap by themselves.
+10. **Keeping never overlaps what you logged** (rule 6): a kept main-lane capture keeps only the
+    untracked part, split around your entries if it straddles one. **Discarding never takes down
+    what you made or kept**: a capture with your own track alongside it refuses until that track
+    is stopped or deleted.
+11. **A manual track adopts capture**: the first captured play under a task with a live hand-made
+    track flows into that track instead of opening a second one.
 
 ## Settings (decision 6)
 
@@ -167,7 +184,7 @@ readable as today's hand-made day, and reviewing must cost one tap, not sixty.
 - **A manual start can adopt capture**: start a track for "Music" and whatever the tweak reports
   flows into it.
 
-## Where things are in web v2.2.0
+## Where things are in web v2.2.0 (2.2.1 changes at the end)
 
 - **You → F-002 · AUTOMATIC CAPTURE:** CAPTURE on/off · ENTRIES ENTER AS **PENDING / STRAIGHT IN**
   (decision 6) · SHORTEST SESSION ALL/45s/2m · a per-app ON/OFF row for each tracked app.
@@ -182,6 +199,10 @@ readable as today's hand-made day, and reviewing must cost one tap, not sixty.
 - **A gap** that captured play explains says so and prefills the backfill sheet.
 - **Code:** `§12 AUTOMATIC CAPTURE` in `web/index.html` — `CAP_APPS`, `mkEvent`, `capIngest`
   (the rules), `capClusters`/`capNode` (review), `capSim*` (the simulator).
+- **web 2.2.1:** `mainAt` + `capSettle` (rule 8) · the gap box (`gapNode` with clusters) · KEEP
+  trims to untracked time (`capKeepMain`) · DISCARD guards your own tracks · STRAIGHT IN entries
+  carry a quiet `CAPTURED` mark · a SHORT SESSION 20s simulator button tests the floor · settings
+  survive the daily sample refresh.
 
 ## Prototype plan — web (what to test on the phone)
 
